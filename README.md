@@ -9,9 +9,9 @@
 ## Commands
 MultiEconomy is still a work-in-progress but it has a few commands!
 
-| Command | Description | Permission |
-| ---------- | ---------- | ---------- |
-| /balance [player|currency]  | Check yours or another players balance  | None |
+| Command | Aliases | Description | Permission |
+| ---------- | ---------- | ---------- | ---------- |
+| /balance [player/currency]  | /bal | Check yours or another players balance  | None |
  
 ## Languages
 MultiEconomy has a language system, the list below are implemented languages and their 3 digit code
