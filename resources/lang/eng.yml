@@ -1,0 +1,13 @@
+---
+# For Color, use &
+prefix: "&8[&9MultiEconomy&8]&7"
+
+list-currencies: "{prefix} Showing your balance for &ball &7currencies"
+list-currencies-other: "{prefix} Showing &b{player}&7's balance for &ball &7currencies"
+own-balance: "{prefix} Your balance for &b{currency} &7is &b{balance}"
+other-balance: "{prefix} &b{player}&7's balance for &b{currency} &7is &b{balance}"
+player-not-played: "{prefix} &b{player} &7has not played on the server before"
+currency-not-found: "{prefix} &b{currency}&7 not found. List of currencies: &b{currencies}"
+use-command-in-game: "{prefix} &7Use this command in-game"
+no-currencies-configured: "{prefix} &7There are no currencies currently configured"
+...

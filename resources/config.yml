@@ -1,0 +1,17 @@
+---
+lang: "eng" # 3 letter language code (Check README.md for supported languages)
+
+currencies:
+  dollars: # Currency Name
+    symbol: "$" # Currency Symbol (Must be a string)
+    symbol-after: false # If you want the symbol before the currency amount (Must be a boolean)
+    starting-amount: 0 # Amount a player starts on when they first join
+    min-amount: 0 # Minimum amount of money a player can have with the currency
+    max-amount: 999999 # Maximum amount of money a player can have with the currency
+  tokens:
+    symbol: "T"
+    symbol-after: true
+    starting-amount: 0
+    min-amount: 0
+    max-amount: 999999
+...
