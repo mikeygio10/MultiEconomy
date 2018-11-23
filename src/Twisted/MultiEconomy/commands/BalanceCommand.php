@@ -6,7 +6,6 @@ namespace Twisted\MultiEconomy\commands;
 use pocketmine\command\CommandSender;
 use pocketmine\command\PluginCommand;
 use pocketmine\Player;
-use pocketmine\utils\TextFormat;
 use Twisted\MultiEconomy\MultiEconomy;
 
 class BalanceCommand extends PluginCommand{

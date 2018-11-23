@@ -47,13 +47,14 @@ class API{
 		$data = $this->plugin->getConfig()->get("currencies");
 		if(!is_array($data)) return [];
 		$currencies = [];
-		foreach($data as $currency => $info) $currencies[] = $currency;
+		foreach($data as $currency => $info) $currencies[] = $info["name"];
 		return $currencies;
 	}
 
 	public function getCurrencyData(string $currency): array{
 		$data = $this->plugin->getConfig()->getNested("currencies.$currency");
 		if(!is_array($data)) $data = [
+			"name" => "Dollars",
 			"symbol" => "$",
 			"symbol-after" => false,
 			"starting-amount" => 0,
