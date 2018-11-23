@@ -22,7 +22,8 @@ MultiEconomy has a language system, the list below are implemented languages and
 MultiEconomy has a built in API, so you can interrogate MultiEconomy with your own plugins
 To get the API class, you have to use ``PluginManager::getPlugin()`` to get an instance of MultiEconomy's main class.
 ```php
-$plugin = pocketmine\Server::getInstance()->getPluginManager()->getPlugin("MultiEconomy");
+/** @var PluginBase $this */
+$plugin = $this->getServer()->getPluginManager()->getPlugin("MultiEconomy");
 ```
 Now you have an instance of the main class, you can use the ``getAPI()`` function
 ```php
