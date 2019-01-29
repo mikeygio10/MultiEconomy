@@ -6,7 +6,12 @@ namespace Twisted\MultiEconomy;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\plugin\PluginBase;
+use Twisted\MultiEconomy\commands\AddToBalanceCommand;
 use Twisted\MultiEconomy\commands\BalanceCommand;
+use Twisted\MultiEconomy\commands\BalanceTopCommand;
+use Twisted\MultiEconomy\commands\PayCommand;
+use Twisted\MultiEconomy\commands\RemoveFromBalanceCommand;
+use Twisted\MultiEconomy\commands\SetBalanceCommand;
 
 class MultiEconomy extends PluginBase implements Listener{
 
@@ -20,9 +25,15 @@ class MultiEconomy extends PluginBase implements Listener{
 		$this->saveDefaultConfig();
 		$this->checkLanguage();
 		$this->saveResource("lang/" . $this->getLanguage() . ".yml");
+		$this->registerCurrencies();
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		$this->getServer()->getCommandMap()->registerAll("MultiCommand", [
-			new BalanceCommand($this)
+			new AddToBalanceCommand($this),
+			new BalanceCommand($this),
+			new BalanceTopCommand($this),
+			new PayCommand($this),
+			new RemoveFromBalanceCommand($this),
+			new SetBalanceCommand($this)
 		]);
 	}
 
@@ -45,10 +56,20 @@ class MultiEconomy extends PluginBase implements Listener{
 		return in_array(strtolower($lang), $supported) ? strtolower($lang) : "eng";
 	}
 
+	public function registerCurrencies(): void{
+		try{
+			foreach($this->getConfig()->get("currencies") as $currency => $data){
+				$currency = new Currency((string)$data["name"], (string)$data["symbol"], (bool)$data["symbol-after"], (int)$data["starting-amount"], (int)$data["min-amount"], (int)$data["max-amount"]);
+				$this->getAPI()->registerCurrency($currency);
+			}
+		}catch(\Throwable $exception){
+			$this->getServer()->getLogger()->logException($exception);
+		}
+	}
+
 	public function onJoin(PlayerJoinEvent $event): void{
-		$player = $event->getPlayer();
-		foreach($this->api->getCurrencies() as $currency){
-			if($this->api->getBalance($player->getName(), $currency) === null) $this->api->setBalance($player->getName(), $currency, $this->api->getCurrencyData($currency)["starting-amount"]);
+		foreach($this->api->getCurrencies() as $name => $data){
+			$this->api->checkBalance($event->getPlayer()->getName(), $name);
 		}
 	}
 }

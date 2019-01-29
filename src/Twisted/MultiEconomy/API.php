@@ -9,59 +9,52 @@ class API{
 
 	/** @var MultiEconomy $plugin */
 	private $plugin;
+	/** @var Currency[] $currencies
+	 */
+	private $currencies = [];
 
 	public function __construct(MultiEconomy $plugin){
 		$this->plugin = $plugin;
+	}
+
+	public function registerCurrency(Currency $currency): bool{
+		if(isset($this->currencies[$currency->getLowerName()])) return false;
+		$this->currencies[$currency->getLowerName()] = $currency;
+		return true;
 	}
 
 	public function getLangData(string $language): Config{
 		return new Config($this->plugin->getDataFolder() . "lang/$language.yml", Config::YAML);
 	}
 
-	public function getMessage(string $key, string $player = "", string $currency = ""): string{
-		$prefix = (string)$this->getLangData($this->plugin->getLanguage())->get("prefix");
-		$prefix = str_replace("&", "§", $prefix);
-		$symbol = $this->getCurrencyData($currency)["symbol"];
-		$balance = (int)$this->getBalance($player, $currency);
-		$balance = $this->getCurrencyData($currency)["symbol-after"] ? $balance = $balance . $symbol : $balance = $symbol . $balance;
+	public function getMessage(string $key, array $values = []): string{
 		$message = (string)$this->getLangData($this->plugin->getLanguage())->get($key);
-		$message = str_replace([
-			"&",
-			"{prefix}",
-			"{player}",
-			"{currency}",
-			"{balance}",
-			"{currencies}"
-		], [
-			"§",
-			$prefix,
-			$player,
-			$currency,
-			$balance,
-			implode(", ", $this->getCurrencies())
-		], $message);
+		$prefix = (string)$this->getLangData($this->plugin->getLanguage())->get("prefix");
+		$message = str_replace("{prefix}", $prefix, $message);
+		$message = str_replace("&", "§", $message);
+		foreach($values as $search => $replace) $message = str_replace($search, $replace, $message);
 		return $message;
 	}
 
+	/**
+	 * @return Currency[]
+	 */
 	public function getCurrencies(): array{
-		$data = $this->plugin->getConfig()->get("currencies");
-		if(!is_array($data)) return [];
-		$currencies = [];
-		foreach($data as $currency => $info) $currencies[] = $info["name"];
-		return $currencies;
+		return $this->currencies;
 	}
 
-	public function getCurrencyData(string $currency): array{
-		$data = $this->plugin->getConfig()->getNested("currencies.$currency");
-		if(!is_array($data)) $data = [
-			"name" => "Dollars",
-			"symbol" => "$",
-			"symbol-after" => false,
-			"starting-amount" => 0,
-			"min-amount" => 0,
-			"max-amount" => 999999
-		];
-		return $data;
+	public function getCurrencyNames(): array{
+		$names = [];
+		foreach($this->currencies as $currency => $data) $names[] = $data->getName();
+		return $names;
+	}
+
+	public function checkBalance(string $player, string $currency): void{
+		$data = $this->getBalances($currency);
+		if($data->get($player) === false){
+			$data->set($player, $this->currencies[$currency]->getStartingAmount());
+			$data->save();
+		}
 	}
 
 	public function addToBalance(string $player, string $currency, int $amount): void{
@@ -75,8 +68,7 @@ class API{
 		$player = strtolower($player);
 		$data = $this->getBalances($currency);
 		if($data->get($player) === false){
-			$config = $this->plugin->getConfig();
-			$data->set($player, (int)$config->getNested("currencies.$currency.starting-amount"));
+			$data->set($player, $this->currencies[$currency]->getStartingAmount());
 			$data->save();
 			return null;
 		}

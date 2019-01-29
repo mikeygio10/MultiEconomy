@@ -14,6 +14,6 @@ currencies:
     symbol: "T"
     symbol-after: true
     starting-amount: 0
-    min-amount: 0
+    min-amount: 500
     max-amount: 999999
 ...
