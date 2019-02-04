@@ -51,7 +51,8 @@ class MultiEconomy extends PluginBase implements Listener{
 	public function getLanguage(): string{
 		$lang = (string)$this->getConfig()->get("lang");
 		$supported = [
-			"eng"
+			"eng",
+			"chn"
 		];
 		return in_array(strtolower($lang), $supported) ? strtolower($lang) : "eng";
 	}

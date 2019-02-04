@@ -23,6 +23,7 @@ MultiEconomy is still a work-in-progress but it has a few commands!
 ## Languages
 MultiEconomy has a language system, the list below are implemented languages and their 3 digit code
  - English: ``eng``
+ - Chinese: ``chn``
 > Create a Pull Request with the language name, and a proper translation of ``eng.yml`` to request another language
  
 ## API
